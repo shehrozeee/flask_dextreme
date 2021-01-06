@@ -1,0 +1,75 @@
+﻿
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DevExtreme Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write(decodeURIComponent('%3Cscript src="js/jquery.min.js"%3E%3C/script%3E'))</script>
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.light.css" />
+    <script src="https://cdn3.devexpress.com/jslib/20.2.4/js/dx.all.js"></script>
+</head>
+<body class="dx-viewport">
+    <div class="demo-container">
+        <div id="data-grid-demo">
+            <div id="gridDeleteSelected"></div>
+            <div id="gridContainer"></div>
+        </div>
+    </div>
+
+
+    <script>
+        var dataarray = [];
+        $(function () {
+            var employeesStore = new DevExpress.data.ArrayStore({
+                key: "id",
+                data: {{data|safe}}
+                });
+
+            var deleteButton = $("#gridDeleteSelected").dxButton({
+                text: "Approve selected items",
+                height: 34,
+                disabled: true,
+                onClick: function () {
+
+                    $.each(dataGrid.getSelectedRowKeys(), function () {
+                        employeesStore.remove(this);
+                        console.log(dataGrid.getSelectedRowKeys());
+                        
+                    });
+                    dataGrid.refresh();
+                }
+            }).dxButton("instance");
+            console.log(employeesStore);
+            var dataGrid = $("#gridContainer").dxDataGrid({
+                dataSource: employeesStore,
+                showBorders: true,
+                paging: {
+                    enabled: false
+                },
+                grouping: {
+                    contextMenuEnabled: true
+                },
+                groupPanel: {
+                    visible: true   // or "auto"
+                },
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false
+                },
+                selection: {
+                    mode: "multiple"
+                },
+                onSelectionChanged: function (data) {
+                    deleteButton.option("disabled", !data.selectedRowsData.length);
+                },
+            }).dxDataGrid("instance");
+
+
+        });
+    </script>
+</body>
+</html>
